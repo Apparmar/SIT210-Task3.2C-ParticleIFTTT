@@ -1,0 +1,39 @@
+/***********************************************************************
+* Task 3.2 C
+* .
+*	Date				Author				Reason
+*	04 April 2021		Amit Parmar			Initial version
+* 
+*/
+
+
+// Set up the pin for reading
+int photoRes = A2;
+
+void setup() {
+    pinMode(photoRes, INPUT);
+}
+
+// Set a boolean so that the events can be run only twice a day
+bool alreadyPublished = false;
+void loop (){
+    
+    // Read the analog signal from the pin
+    int lightlevel = analogRead(photoRes);  
+
+    // If the reading is high and already not published then publish
+    if (lightlevel > 1 && alreadyPublished == false) 
+        {   alreadyPublished = true;
+            Particle.publish("sunLight","Good morning. Sunrise event.",PRIVATE);
+        }
+        
+        
+    // If the reading is low and sunrise event was already published then publish the event
+    if (lightlevel < 1 && alreadyPublished == true) 
+        {
+            alreadyPublished = false;
+            Particle.publish("sunLight","Good night. Sunset event.",PRIVATE);
+        }
+        
+    delay(20000);
+}
